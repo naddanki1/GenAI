@@ -10,14 +10,14 @@ import java.io.IOException;
 
 @RestController
 
-public class SimpleController {
+public class PromptController {
 
     @Autowired
     SimplePromptService promptService;
 
-    @GetMapping(value = "/api/prompt")
-    public String createImage(@RequestParam(value = "promtName") String promtName) throws IOException, InterruptedException {
-       var chats = promptService.getChatCompletions(promtName);
+    @GetMapping(value = "/api/generate-response")
+    public String generateResponse(@RequestParam(value = "promt") String promt) throws IOException, InterruptedException {
+       var chats = promptService.getChatCompletions(promt);
         return chats.toString();
 
     }
