@@ -3,6 +3,7 @@ package com.epam.training.gen.ai.configuration;
 import com.azure.ai.openai.OpenAIAsyncClient;
 import com.azure.ai.openai.OpenAIClientBuilder;
 import com.azure.core.credential.AzureKeyCredential;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +16,11 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class OpenAIConfiguration {
+    @Value("${client-azureopenai-key}")
+    private String apiKey;
+
+    @Value("${client-azureopenai-endpoint}")
+    private String endpoint;
 
     /**
      * Creates an {@link OpenAIAsyncClient} bean for interacting with Azure OpenAI Service asynchronously.
@@ -24,8 +30,8 @@ public class OpenAIConfiguration {
     @Bean
     public OpenAIAsyncClient openAIAsyncClient() {
         return new OpenAIClientBuilder()
-                .credential(new AzureKeyCredential("dial-6nu6hm3wyqdpqykud3wa4s8esp6"))
-                .endpoint("https://ai-proxy.lab.epam.com")
+                .credential(new AzureKeyCredential(apiKey))
+                .endpoint(endpoint)
                 .buildAsyncClient();
     }
 }
