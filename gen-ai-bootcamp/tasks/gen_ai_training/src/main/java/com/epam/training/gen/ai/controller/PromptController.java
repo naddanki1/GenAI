@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 
@@ -26,17 +28,24 @@ public class PromptController {
      * </p>
      *
      * @param prompt the text input to be used as a prompt for generating a response
-     * @return the generated response as a string
+     * @return the generated response as a json
      */
     @GetMapping(value = "/api/generate-response")
-    public ResponseEntity<String> generateResponse(@RequestParam(value = "prompt") String prompt) throws IOException, InterruptedException {
+    public ResponseEntity<Map<String, Object>> generateResponse(@RequestParam(value = "input") String input) {
+        Map<String, Object> response = new HashMap<>();
+
         try {
-            var chats = promptService.getChatCompletions(prompt);
-            return ResponseEntity.ok(chats.toString());
+            var chats = promptService.getChatCompletions(input);
+
+            response.put("status", "success");
+            response.put("data", chats);
+
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error generating response");
+            response.put("status", "error");
+            response.put("message", "Error generating response");
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
     }
-
 }
