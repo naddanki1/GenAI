@@ -31,14 +31,18 @@ public class SimplePromptService {
     private final OpenAIAsyncClient aiAsyncClient;
     private final String deploymentOrModelName;
     private final ChatCompletionStrategy chatCompletionStrategy;
+    private final ChatHistoryService chatHistoryService;
 
     public SimplePromptService(OpenAIAsyncClient aiAsyncClient,
                                @Value("${client-azureopenai-deployment-name}") String deploymentOrModelName,
-                               ChatCompletionStrategy chatCompletionStrategy) {
+                               ChatCompletionStrategy chatCompletionStrategy,
+                               ChatHistoryService chatHistoryService) {
         this.aiAsyncClient = aiAsyncClient;
         this.deploymentOrModelName = deploymentOrModelName;
         this.chatCompletionStrategy = chatCompletionStrategy;
+        this.chatHistoryService = chatHistoryService;
     }
+
     /**
      * Generates chat completions for a given prompt.
      * <p>
@@ -51,11 +55,12 @@ public class SimplePromptService {
      */
     public List<String> getChatCompletions(String prompt) {
         PromptExecutionSettings settings = chatCompletionStrategy.getDefaultSettings();
+        chatHistoryService.addUserMessage(prompt);
         var completions = aiAsyncClient
                 .getChatCompletions(
                         deploymentOrModelName,
                         new ChatCompletionsOptions(
-                                List.of(new ChatRequestUserMessage(prompt)))
+                                chatHistoryService.getChatHistory())
                                 .setMaxTokens(settings.getMaxTokens())
                                 .setTemperature(settings.getTemperature()))
 
@@ -63,6 +68,9 @@ public class SimplePromptService {
         var messages = completions.getChoices().stream()
                 .map(c -> c.getMessage().getContent())
                 .toList();
+        if (!messages.isEmpty()) {
+            chatHistoryService.addSystemMessage(messages.get(0));
+        }
         log.info(messages.toString());
         return messages;
     }
