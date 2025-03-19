@@ -60,8 +60,7 @@ public class SimplePromptService {
                 .getChatCompletions(
                         deploymentOrModelName,
                         new ChatCompletionsOptions(
-                                chatHistoryService.getChatHistory()
-                        )
+                                chatHistoryService.getChatHistory())
                                 .setMaxTokens(settings.getMaxTokens())
                                 .setTemperature(settings.getTemperature()))
 
