@@ -3,6 +3,9 @@ package com.epam.training.gen.ai.configuration;
 import com.azure.ai.openai.OpenAIAsyncClient;
 import com.azure.ai.openai.OpenAIClientBuilder;
 import com.azure.core.credential.AzureKeyCredential;
+import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIChatCompletion;
+import com.microsoft.semantickernel.services.chatcompletion.ChatCompletionService;
+import com.microsoft.semantickernel.services.chatcompletion.ChatHistory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
  * for interacting with the Azure OpenAI Service. It uses the Azure Key
  * Credential for authentication and connects to a specified endpoint.
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 public class OpenAIConfiguration {
     @Value("${client-azureopenai-key}")
     private String apiKey;
@@ -33,5 +36,9 @@ public class OpenAIConfiguration {
                 .credential(new AzureKeyCredential(apiKey))
                 .endpoint(endpoint)
                 .buildAsyncClient();
+    }
+    @Bean
+    public ChatHistory chatHistory(){
+        return new ChatHistory();
     }
 }
