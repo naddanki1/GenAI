@@ -74,7 +74,7 @@ public class SimplePromptService {
         if (model.equalsIgnoreCase("dall-e-3") || model.equalsIgnoreCase("stability.stable-diffusion-xl")) {
             return generateImage(prompt, deploymentOrModelName);
         } else {
-            return generateTextResponse(prompt, deploymentOrModelName);
+            return generateTextResponse(prompt, model);
 
         }
     }
