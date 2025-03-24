@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class SemanticKernelConfiguration {
 
     @Bean
-    public ChatCompletionService chatCompletionService(OpenAIAsyncClient client, @Value("${client-azureopenai-deployment-name}") String deploymentModel)  {
+    public ChatCompletionService chatCompletionService(OpenAIAsyncClient client, @Value("${client-azureopenai-deployment-name:gpt-4}") String deploymentModel)  {
         return OpenAIChatCompletion.builder()
             .withOpenAIAsyncClient(client)
             .withModelId(deploymentModel)
