@@ -28,14 +28,15 @@ public class PromptController {
      * </p>
      *
      * @param prompt the text input to be used as a prompt for generating a response
+     * @param model the text input to be used as a model for generating a response
      * @return the generated response as a json
      */
     @GetMapping(value = "/api/generate-response")
-    public ResponseEntity<Map<String, Object>> generateResponse(@RequestParam(value = "input") String input) {
+    public ResponseEntity<Map<String, Object>> generateResponse(@RequestParam(value = "input") String input, @RequestParam(value="model", required = false) String model) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            var chats = promptService.getChatCompletions(input);
+            var chats = promptService.getChatCompletions(input,model);
 
             response.put("status", "success");
             response.put("data", chats);
