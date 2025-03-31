@@ -1,7 +1,9 @@
 package com.epam.training.gen.ai;
 
+import com.epam.training.gen.ai.configuration.ModelConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
