@@ -132,7 +132,7 @@ public class SimplePromptService {
         List<String> urls = imageGenerations.getData().stream()
                 .map(image -> image.getUrl())
                 .collect(Collectors.toList());
-        System.out.println("Urls");F
+        System.out.println("Urls");
         return urls;
     }
 
