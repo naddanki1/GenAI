@@ -1,7 +1,6 @@
 package com.epam.training.gen.ai.promt;
 
 import com.azure.ai.openai.OpenAIAsyncClient;
-import com.azure.ai.openai.OpenAIClient;
 import com.azure.ai.openai.models.ImageGenerationOptions;
 import com.azure.ai.openai.models.ImageGenerations;
 import com.azure.ai.openai.models.ImageSize;
@@ -10,6 +9,7 @@ import com.epam.training.gen.ai.strategy.ChatCompletionStrategy;
 import com.microsoft.semantickernel.Kernel;
 import com.microsoft.semantickernel.aiservices.openai.chatcompletion.OpenAIChatCompletion;
 import com.microsoft.semantickernel.orchestration.InvocationContext;
+import com.microsoft.semantickernel.orchestration.ToolCallBehavior;
 import com.microsoft.semantickernel.services.chatcompletion.ChatCompletionService;
 import com.microsoft.semantickernel.services.chatcompletion.ChatHistory;
 import com.microsoft.semantickernel.services.chatcompletion.ChatMessageContent;
@@ -91,7 +91,9 @@ public class SimplePromptService {
 
         if (!CollectionUtils.isEmpty(response)) {
             log.info(response.get(0).getContent());
-            chatHistory.addSystemMessage(response.get(0).getContent());
+            response.stream()
+                    .filter(res -> res.getContent() !=null)
+                            .forEach(res -> chatHistory.addSystemMessage(res.getContent()));
             chats = response.stream()
                     .map(ChatMessageContent::getContent)
                     .collect(Collectors.toList());
@@ -113,7 +115,8 @@ public class SimplePromptService {
             Kernel kernel
     ) {
         InvocationContext optionalInvocationContext = InvocationContext.builder()
-                .withPromptExecutionSettings(chatCompletionStrategy.getDefaultSettings()).build();
+                .withPromptExecutionSettings(chatCompletionStrategy.getDefaultSettings())
+        .withToolCallBehavior(ToolCallBehavior.allowAllKernelFunctions(true)).build();
         return chatCompletionService.getChatMessageContentsAsync(history, kernel,
                 optionalInvocationContext).block();
     }
